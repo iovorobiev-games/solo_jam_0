@@ -8,8 +8,10 @@ using UnityEngine.EventSystems;
 namespace template.anim.components
 {
     [RequireComponent(typeof(BoxCollider2D)), RequireComponent(typeof(Rigidbody2D))]
-    public class Movable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
+    public class Movable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IDragHandler
     {
+        public bool holdToDrag = true;
+        
         private bool isDragging = false;
         private Camera mainCamera;
         private Vector3 offset;
@@ -28,6 +30,16 @@ namespace template.anim.components
             }
         }
 
+        private void Update()
+        {
+            if (holdToDrag)
+            {
+                return;
+            }
+
+            UpdatePositionOnDrag(mainCamera.ScreenToWorldPoint(Input.mousePosition));
+        }
+
         public UniTask dragStart()
         {
             dragStartSource?.TrySetCanceled();
@@ -44,6 +56,14 @@ namespace template.anim.components
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (holdToDrag)
+            {
+                StartDragging(eventData);
+            }
+        }
+
+        private void StartDragging(PointerEventData eventData)
+        {
             isDragging = true;
 
             // Calculate offset between object position and mouse position
@@ -56,10 +76,19 @@ namespace template.anim.components
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (holdToDrag)
+            {
+                DragEnd();
+            }
+        }
+
+        private void DragEnd()
+        {
             if (isDragging)
             {
                 dragEndSource?.TrySetResult(dragEndSet.ToArray());
             }
+
             isDragging = false;
         }
 
@@ -79,10 +108,30 @@ namespace template.anim.components
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (holdToDrag)
+            {
+                UpdatePositionOnDrag(mainCamera.ScreenToWorldPoint(eventData.position));
+            }
+        }
+
+        private void UpdatePositionOnDrag(Vector3 worldPosition)
+        {
             if (!isDragging) return;
-            var worldPosition = mainCamera.ScreenToWorldPoint(eventData.position);
             worldPosition.z = transform.position.z; // Keep original Z position
             transform.position = worldPosition + offset;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (holdToDrag) return;
+            if (isDragging)
+            {
+                DragEnd();
+            }
+            else
+            {
+                StartDragging(eventData);
+            }
         }
     }
 }

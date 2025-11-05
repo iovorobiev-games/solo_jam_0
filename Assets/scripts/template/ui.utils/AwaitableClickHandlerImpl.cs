@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Cysharp.Threading.Tasks;
+using template.ui.utils.mouse;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Vector3 = UnityEngine.Vector3;
@@ -8,16 +10,16 @@ using Vector3 = UnityEngine.Vector3;
 namespace utils
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class AwaitableClickHandlerImpl: MonoBehaviour, IAwaitablePointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+    public class AwaitableClickHandlerImpl: MonoBehaviour, IAwaitablePointerClickHandler
     {
         private AwaitableClickListener<GameObject> _listener = new();
-        public Color defaultTint = Color.white;
-        public Color hoverTint = Color.clear;
-        public Vector3 deltaMoveOnClick = Vector3.zero;
-        public SpriteRenderer buttonSprite;
-
-        private Vector3 originalPos;
         
+        private async UniTask Start()
+        {
+            // Wait for all other components to initialize
+            await UniTask.WaitForEndOfFrame();
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             _listener.notifyClick(gameObject);
@@ -26,36 +28,6 @@ namespace utils
         public async UniTask onClickAwaitable()
         {
             await _listener.awaitClick();
-        }
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (hoverTint != Color.clear && buttonSprite != null)
-            {
-                buttonSprite.color = hoverTint;
-            }
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (buttonSprite != null)
-            {
-                buttonSprite.color = defaultTint;
-            }
-        }
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            originalPos = transform.position;
-            if (deltaMoveOnClick != Vector3.zero)
-            {
-                transform.position += deltaMoveOnClick;
-            }
-        }
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            transform.position = originalPos;
         }
     }
 }
