@@ -64,7 +64,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: ab14b6c3850915141887190cf5ce3e4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -238,5 +238,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15ca1525f722462cae7113c9f20aec8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.SelectableRoomView
-  floating: {fileID: 0}
-  movable: {fileID: 0}
+  floating: {fileID: 9035470362522528981}
+  movable: {fileID: 7496445568816518930}

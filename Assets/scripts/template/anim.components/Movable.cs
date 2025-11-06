@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,8 +17,9 @@ namespace template.anim.components
         private Camera mainCamera;
         private Vector3 offset;
 
-        private UniTaskCompletionSource<Collider2D[]> dragEndSource;
-        private UniTaskCompletionSource dragStartSource;
+        private List<UniTaskCompletionSource<Collider2D[]>> dragEndSource = new();
+        private List<UniTaskCompletionSource> dragCancelSource = new();
+        private List<UniTaskCompletionSource> dragStartSource = new();
         
         private HashSet<Collider2D> dragEndSet = new();
         
@@ -42,16 +44,24 @@ namespace template.anim.components
 
         public UniTask dragStart()
         {
-            dragStartSource?.TrySetCanceled();
-            dragStartSource = new();
-            return dragStartSource.Task;
+            var uniTaskCompletionSource = new UniTaskCompletionSource();
+            dragStartSource.Add(uniTaskCompletionSource); ;
+            return uniTaskCompletionSource.Task;
         }
+      
 
         public async UniTask<Collider2D[]> dragEnd()
         {
-            dragEndSource?.TrySetCanceled();
-            dragEndSource = new();
-            return await dragEndSource.Task;
+            var dragEndTask = new UniTaskCompletionSource<Collider2D[]>();
+            dragEndSource.Add(dragEndTask);
+            return await dragEndTask.Task;
+        }
+        
+        public async UniTask dragCancel()
+        {
+            var dragCancelTask = new UniTaskCompletionSource();
+            dragCancelSource.Add(dragCancelTask);
+            await dragCancelTask.Task;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -70,8 +80,12 @@ namespace template.anim.components
             Vector3 worldPosition = mainCamera.ScreenToWorldPoint(eventData.position);
             worldPosition.z = transform.position.z; // Keep original Z position
             offset = transform.position - worldPosition;
-            
-            dragStartSource?.TrySetResult();
+
+            foreach (var taskSource in dragStartSource)
+            {
+                taskSource.TrySetResult();
+            }
+            dragStartSource.Clear();
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -86,7 +100,12 @@ namespace template.anim.components
         {
             if (isDragging)
             {
-                dragEndSource?.TrySetResult(dragEndSet.ToArray());
+                foreach (var task in dragEndSource)
+                {
+                    task?.TrySetResult(dragEndSet.ToArray());
+                }
+                dragEndSource.Clear();
+                dragEndSet.Clear();
             }
 
             isDragging = false;
@@ -126,12 +145,33 @@ namespace template.anim.components
             if (holdToDrag) return;
             if (isDragging)
             {
-                DragEnd();
+                if (eventData.button == PointerEventData.InputButton.Left)
+                {
+                    DragEnd();
+                }
+                else if (eventData.button == PointerEventData.InputButton.Right)
+                {
+                    CancelDrag();
+                }
             }
             else
             {
                 StartDragging(eventData);
             }
+        }
+
+        private void CancelDrag()
+        {
+            if (isDragging)
+            {
+                foreach (var task in dragCancelSource)
+                {
+                    task?.TrySetResult();
+                }
+                dragCancelSource.Clear();
+            }
+
+            isDragging = false;
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Game
         private void Awake()
         {
             DI.sceneScope.register(this);
+            var dungeonVm = new DungeonVM(top, left, bottom, right);
+            DI.sceneScope.register(dungeonVm);
         }
 
         private void Update()
@@ -45,6 +47,10 @@ namespace Game
 
         public void highlightClosestPosition(bool highlight)
         {
+            if (lastKnownPosition != Vector3Int.forward)
+            {
+                tilemap.SetColor(lastKnownPosition, Color.white);
+            }
             this.highlight = highlight;
         }
         
@@ -75,6 +81,11 @@ namespace Game
                 }
             }
             return tilemap.CellToWorld(closestTilePosition) + Vector3.one * 0.5f;
+        }
+
+        public Vector3Int WorldToCell(Vector3 worldPosition)
+        {
+            return tilemap.WorldToCell(worldPosition);
         }
     }
 }
