@@ -13,7 +13,7 @@ namespace Game
         public int right;
         public int bottom;
 
-        private bool highlight = false;
+        private bool highlight;
         private Vector3Int lastKnownPosition = Vector3Int.forward;
         
         private void Awake()
@@ -36,7 +36,7 @@ namespace Game
             }
             if (lastKnownPosition != Vector3Int.forward)
             {
-                tilemap.SetColor(position, Color.white);
+                tilemap.SetColor(lastKnownPosition, Color.white);
             }
             tilemap.SetTileFlags(position, TileFlags.None);
             tilemap.SetColor(position, Color.green);
@@ -64,8 +64,7 @@ namespace Game
                     // Check if tile exists (not empty)
                     if (tilemap.HasTile(cellPosition))
                     {
-                        Vector3 tileWorldPosition = tilemap.CellToWorld(cellPosition);
-                        float distance = Vector3.Distance(worldPosition, tileWorldPosition);
+                        float distance = Vector3.Distance(centerCell, cellPosition);
 
                         if (distance < closestDistance)
                         {
@@ -75,8 +74,6 @@ namespace Game
                     }
                 }
             }
-            Debug.Log("Closest tile position is: " + closestTilePosition + "");
-            Debug.Log("Closest tile position world is: " +  tilemap.CellToWorld(closestTilePosition) + "");
             return tilemap.CellToWorld(closestTilePosition) + Vector3.one * 0.5f;
         }
     }
