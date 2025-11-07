@@ -12,6 +12,7 @@ namespace Game
 {
     public class SelectableRoomView : MonoBehaviour
     {
+        public Transform dungeonParent;
         public Floating floating;
         public Movable movable;
         private TilePlacement tilePlacement;
@@ -86,6 +87,7 @@ namespace Game
                 {
                     transform.position = tilePlacement.GetClosestTilePosition(transform.position);
                     dungeon.AddRoom(RoomVM, tilePlacement.WorldToCell(transform.position));
+                    transform.parent = dungeonParent;
                 }
                 tilePlacement.highlightClosestPosition(false);
             }

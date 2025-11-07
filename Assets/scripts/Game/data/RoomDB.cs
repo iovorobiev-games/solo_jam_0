@@ -7,7 +7,7 @@ namespace Game.data
         public static string spritesheetpath = "dm";
         public static Dictionary<string, Room> rooms = new()
         {
-            {"cellar", new Room("cellar", "1", "Cellar", 1, 1, 1)},
+            {"cellar", new Room("cellar", "1", "Cellar", 1, 2, 1)},
         };
     }
 }

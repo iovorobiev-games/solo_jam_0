@@ -9,27 +9,25 @@ namespace Game
 {
     public class RoomSelectionView : MonoBehaviour
     {
+        public Transform dungeonParent;
         public SelectableRoomView[] rooms;
         public Transform[] slots;
         private GameObject slotPrefab;
         private CancellationTokenSource _lifecycleCancellation = new();
+        private Player player;
         
-        private void Awake()
+        private async void Awake()
         {
             DI.sceneScope.register(this);
-        }
-
-        private async UniTask Start()
-        {
+            player = DI.sceneScope.getInstance<Player>();
             slotPrefab = await Resources.LoadAsync<GameObject>("Prefabs/slot").ToUniTask() as GameObject;
-            Lifecycle().Forget();
         }
-        
-        private async UniTask Lifecycle()
+        public async UniTask Lifecycle()
         {
-            GenerateNewRooms();
-            while (!_lifecycleCancellation.IsCancellationRequested)
+           gameObject.SetActive(true);
+            while (player.hasBudgetFor(1))
             {
+                await GenerateNewRooms();
                 var cancellationSource = new CancellationTokenSource();
                 var tasks = new UniTask[rooms.Length];
                 for (var i = 0; i < rooms.Length; i++)
@@ -39,7 +37,9 @@ namespace Game
 
                 var selected = await UniTask.WhenAny(tasks);
                 cancellationSource.Cancel();
-
+                
+                player.spend(rooms[selected].RoomVM.getCost());
+                
                 tasks = new UniTask[rooms.Length - 1];
                 var j = 0;
                 for (var i = 0; i < rooms.Length; i++)
@@ -61,10 +61,12 @@ namespace Game
                     }
                     await rooms[i].remove();
                 }
-
-                await GenerateNewRooms();
             }
-            
+        }
+
+        public async UniTask hide()
+        {
+            gameObject.SetActive(false);
         }
 
         private async UniTask GenerateNewRooms()
@@ -72,6 +74,7 @@ namespace Game
             for (var i = 0; i < rooms.Length; i++)
             {
                 rooms[i] = Instantiate(slotPrefab, slots[i]).GetComponent<SelectableRoomView>();
+                rooms[i].dungeonParent = dungeonParent;
                 var randomRoom = RandomRoomGenerator.generate();
                 rooms[i].RoomVM = new RoomVM(randomRoom);
             }
