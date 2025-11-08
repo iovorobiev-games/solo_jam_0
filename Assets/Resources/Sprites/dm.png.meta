@@ -187,7 +187,7 @@ TextureImporter:
         width: 56
         height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 3, z: 3, w: 3}
       customData: 
       outline: []
@@ -196,6 +196,72 @@ TextureImporter:
       bones: []
       spriteID: af0d587ecdeb45d42a43522c8a7fc3c5
       internalID: 300686348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dm_4
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 184
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19a8b4629ce69104483f2d38ca11c3bd
+      internalID: 180223788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dm_5
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 152
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8614853de6c515b47927eaf4254484fa
+      internalID: 1358806519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dm_6
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 152
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ba1448fa35afd44ebbd8dee6236eefa
+      internalID: -249512761
       vertices: []
       indices: 
       edges: []
@@ -220,6 +286,9 @@ TextureImporter:
       dm_1: 341203959
       dm_2: 1493234904
       dm_3: 300686348
+      dm_4: 180223788
+      dm_5: 1358806519
+      dm_6: -249512761
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -24,6 +24,7 @@ namespace Game
                 player.setBudget(5);
                 enemy.appear();
                 dungeon.tick();
+                dungeon.retriggerSkills();
                 await roomSelectionView.Lifecycle();
                 await roomSelectionView.hide();
                 var enemyData = new EnemyVM

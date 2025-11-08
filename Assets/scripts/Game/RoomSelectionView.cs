@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DefaultNamespace;
+using Game.data;
 using UnityEngine;
 
 namespace Game
@@ -10,11 +11,18 @@ namespace Game
     public class RoomSelectionView : MonoBehaviour
     {
         public Transform dungeonParent;
+        public RoomVM[] selectableRoomsArray = new RoomVM[3];
         public SelectableRoomView[] rooms;
         public Transform[] slots;
         private GameObject slotPrefab;
         private CancellationTokenSource _lifecycleCancellation = new();
         private Player player;
+
+        public RoomVM CurrentSelected
+        {
+            get;
+            private set;
+        }
         
         private async void Awake()
         {
@@ -25,6 +33,7 @@ namespace Game
         public async UniTask Lifecycle()
         {
            gameObject.SetActive(true);
+           generateRooms();
             while (player.hasBudgetFor(1))
             {
                 await GenerateNewRooms();
@@ -37,9 +46,8 @@ namespace Game
 
                 var selected = await UniTask.WhenAny(tasks);
                 cancellationSource.Cancel();
-                
+                generateRooms();
                 player.spend(rooms[selected].RoomVM.getCost());
-                
                 tasks = new UniTask[rooms.Length - 1];
                 var j = 0;
                 for (var i = 0; i < rooms.Length; i++)
@@ -69,14 +77,22 @@ namespace Game
             gameObject.SetActive(false);
         }
 
+        private void generateRooms()
+        {
+            for (var i = 0; i < selectableRoomsArray.Length; i++)
+            {
+                selectableRoomsArray[i] = new RoomVM(RandomRoomGenerator.generate());
+            }
+        }
+
         private async UniTask GenerateNewRooms()
         {
             for (var i = 0; i < rooms.Length; i++)
             {
                 rooms[i] = Instantiate(slotPrefab, slots[i]).GetComponent<SelectableRoomView>();
                 rooms[i].dungeonParent = dungeonParent;
-                var randomRoom = RandomRoomGenerator.generate();
-                rooms[i].RoomVM = new RoomVM(randomRoom);
+                var randomRoom = selectableRoomsArray[i];
+                rooms[i].RoomVM = randomRoom;
             }
         }
     }

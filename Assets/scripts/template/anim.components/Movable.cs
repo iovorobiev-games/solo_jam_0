@@ -12,8 +12,12 @@ namespace template.anim.components
     public class Movable : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IDragHandler
     {
         public bool holdToDrag = true;
-        
-        private bool isDragging = false;
+
+        public bool isDragging
+        {
+            get;
+            set;
+        }
         private Camera mainCamera;
         private Vector3 offset;
 

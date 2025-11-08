@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Abilities;
+using Game.data;
 using UnityEngine;
 
 namespace Game
@@ -24,7 +26,12 @@ namespace Game
         public void AddRoom(RoomVM room, Vector3Int coords)
         {
             rooms[coords] = room;
-            printRooms();
+            room.triggerSkill();
+            foreach (var roomVm in rooms)
+            {
+                var relativeCoords = roomVm.Key - coords;
+                roomVm.Value.triggerSkillOn(room, new Vector2Int(relativeCoords.x, relativeCoords.y));
+            }
         }
 
         public Vector3Int[] getPathThroughDungeon()
@@ -44,10 +51,37 @@ namespace Game
                 room.tick();
             }
         }
+
+        public void retriggerSkills()
+        {
+            foreach (var entry in rooms)
+            {
+                entry.Value.resetBoosts();
+            }
+            foreach (var entry in rooms)
+            {
+                entry.Value.triggerSkill();
+            }
+        }
         
         public RoomVM GetRoom(Vector3Int coords)
         {
             return rooms[coords];
+        }
+
+        public List<RoomVM> GetRoomsFromRoomSkillFilter(RoomVM filter)
+        {
+            var coords = rooms.First((entry) => filter == entry.Value).Key;
+            return GetRoomsFromRoomSkillFilter(filter, coords);
+        }
+        
+        public List<RoomVM> GetRoomsFromRoomSkillFilter(RoomVM filter, Vector3Int coords)
+        {
+            return rooms.Where((entry) =>
+            {
+                var coordsDifference = entry.Key - coords;
+                return filter.Room.Skill.filter(entry.Value, new Vector2Int(coordsDifference.x, coordsDifference.y));
+            }).Select((pair) => pair.Value).ToList();
         }
         
         private void printRooms()
