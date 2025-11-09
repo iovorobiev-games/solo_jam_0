@@ -114,7 +114,7 @@ namespace Game.data
                     new TriggerAbility(),
                     new Filter[]
                     {
-                        new RoomTypeFilter("lab_left_right"),
+                        new RoomTypeFilter("Alchemist Lab"),
                         PositionFiltersDB.filters["all"],
                     },
                     "Each lab around triggers one more time"

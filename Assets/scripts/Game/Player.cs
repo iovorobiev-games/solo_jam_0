@@ -3,20 +3,27 @@ namespace Game
     public class Player
     {
         private int budget;
-        private int currentBudget;
+        public int Budget
+        {
+            get
+            {
+                return budget;
+            }
+            set
+            {
+                budget = value;
+                currentBudget = budget;
+            }
+        }
+
+        public int currentBudget
+        {
+            get;
+            set;
+        }
         private int lives = 3;
         private int currentLives = 3;
         
-        public Player()
-        {
-        }
-
-        public void setBudget(int budget)
-        {
-            this.budget = budget;
-            currentBudget = budget;
-        }
-
         public void spend(int amount)
         {
             currentBudget -= amount;

@@ -105,9 +105,12 @@ namespace Game
             {
                 return;
             }
+            Debug.Log("Trigger Skill " + Room.name);
             var impactedRooms = dungeon.GetRoomsFromRoomSkillFilter(this);
+            Debug.Log("Impacted rooms count: " + impactedRooms.Count);
             foreach (var impacted in impactedRooms)
             {
+                Debug.Log("Triggering for impacted " + impacted.Room.name);
                 Room.Skill.ability.use(impacted);
             }
 
