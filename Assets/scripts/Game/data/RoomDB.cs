@@ -20,6 +20,8 @@ namespace Game.data
                 SkillDB.skills["fungi_bonus"]
                 )
             },
+            {"tomb", new Room("Tomb", "5", "Skeletons", 3, 4, 2, SkillDB.skills["self_cd_reduce"])},
+            {"chest", new Room("Treasury", "7", "Treasures!", 1, 2, 1, SkillDB.skills["cost_reduce_one_shot"])}
         };
     }
 }

@@ -41,7 +41,11 @@ namespace Game
             set;
         }
 
-        private DungeonVM dungeon;
+        public DungeonVM dungeon
+        {
+            get;
+            private set;
+        }
         private int skillUses;
         private readonly RoomSelectionView selectionView;
 

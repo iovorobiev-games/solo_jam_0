@@ -119,7 +119,18 @@ namespace Game.data
                     },
                     "Each lab around triggers one more time"
                 )
-            }
+            },
+            {
+                "self_cd_reduce",
+                new Skill(
+                    new BoostAbility(1, BoostAbility.BoostType.COOLDOWN),
+                    new Filter[]
+                    {
+                        new SelfRoomTypeFilter(new RoomTypeFilter("Tomb"))
+                    },
+                    "+1" + RTHelper.RESP + " in this room, if close to other Tombs"
+                )
+            },
         };
     }
 }

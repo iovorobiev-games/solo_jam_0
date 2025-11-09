@@ -26,6 +26,7 @@ namespace Game
         public void AddRoom(RoomVM room, Vector3Int coords)
         {
             rooms[coords] = room;
+            room.IsPlaced = true;
             room.triggerSkill();
             foreach (var roomVm in rooms)
             {
@@ -66,7 +67,12 @@ namespace Game
         
         public RoomVM GetRoom(Vector3Int coords)
         {
-            return rooms[coords];
+            return rooms.GetValueOrDefault(coords, null);
+        }
+
+        public Vector3Int GetRoomPosition(RoomVM room)
+        {
+            return rooms.FirstOrDefault(entry => entry.Value == room).Key;
         }
 
         public List<RoomVM> GetRoomsFromRoomSkillFilter(RoomVM filter)

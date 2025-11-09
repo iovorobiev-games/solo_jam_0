@@ -100,7 +100,6 @@ namespace Game
                     transform.position = tilePlacement.GetClosestTilePosition(transform.position);
                     dungeon.AddRoom(RoomVM, tilePlacement.WorldToCell(transform.position));
                     transform.parent = dungeonParent;
-                    RoomVM.IsPlaced = true;
                     movable.enabled = false;
                     placedLifecycle().Forget();
                 }

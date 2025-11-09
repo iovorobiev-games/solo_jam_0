@@ -14,6 +14,7 @@ namespace Game.Abilities
         
         public bool filter(RoomVM room, Vector2Int relativePos)
         {
+            if (room == null) return false;
             return roomName == room.Room.name;
         }
     }
